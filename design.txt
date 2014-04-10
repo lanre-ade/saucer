@@ -1,6 +1,3 @@
-Assignment 3
-CMPUT 379
-
 
 DESIGN DOCUMENT
 
