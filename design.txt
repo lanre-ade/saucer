@@ -1,0 +1,71 @@
+Assignment 3
+CMPUT 379
+
+
+DESIGN DOCUMENT
+
+To run go to directory and type ‘make’
+
+My program runs without taking any arguments.
+There can be a maximum of ten saucers and 25 rockets in the game
+I have an array list that keeps track of the saucers and another to keep track of the rockets
+I found it redundant having an list to track the pthreads since a join is not required in the end.
+I have a convention of using the delay variable in a propset struct to determine whether or not the corresponding thread handling that struct should be alive or not.
+When the propset.delay is set to a negative number, based on my convention, it implies that the propset is invalid and the thread handling that particular property set exits itself
+(There is an if statement that checks for this inside every saucer and rocket handler function)
+
+
+There are some helper functions that handle the vertical and horizontal movement of strings in the terminal window
+There is also a function that determines whether a collision has occurred between two strings (it is called ‘collides’). It takes in the the property set of the two strings being checked.
+
+
+
+
+
+There are 4 main threads in my program
+One thread to control the players launch pad (animateLaunchSite). 
+This thread is alive from the beginning to the end of the game, it moves the launch site one step along the horizontal axis of the screen (left or right) depending on the players keyboard input.
+
+
+There is a thread to spawn saucers (createSaucer). 
+This thread goes to sleep and wakes up after a variable amount of time to create a thread that will spawn a new saucer on at the top left edge of the screen. It also runs from the beginning of the game till the end. 
+
+
+There is another thread to create rockets (animateRocket). This thread runs in a loop and it is called when the spacebar is pressed. It usually terminates itself when the rocket goes off the screen or bumps into a saucer.
+
+
+There is also a thread to check if the game has ended (game). It waits for the one of the rocket threads to turn on the game over flag and then it prints game over to the window.
+It also updates the statistics such as scores, number of rockets left and saucers escapes whenever these values change
+
+
+
+
+
+
+
+
+
+
+
+
+Critical Sections
+I share my array of stylized strings (saucerz), my array of all propset of saucers (saucers), my array of all propset of rockets and the game statistics like scores as global variables.
+The arrays ‘saucers’ and ‘saucerz’ are accessed by all the saucer threads. The array ‘saucers’ is also accessed by the rocket threads to determine if a collision has occurred.  Both arrays are protected by being wrapped in mutex locks wherever they are read or updated. 
+
+
+The array of propset for rockets is also a global variable since it is accessed by a large number of rocket threads. It is also protected using mutex locks wherever it is read or updated.
+
+
+
+
+
+
+User Interface
+The controls for the game are as follows
+Pressing ‘0’ moves the launch site right and pressing ‘9’ moves the launch site left
+Pressing the spacebar fires a rocket from the launch site.
+The player starts with  25 rockets and the goal is not to allow 6 saucers escape
+When 6 saucers escape of the player runs out of rockets, the game ends.
+A ‘game over’ screen appears and the users score is displayed at the bottom
+Some additional functionality for better gameplay is that the average speed of the saucers increases as the player scores more
+Also the rate at which saucers spawn increases as the players gets higher scores
