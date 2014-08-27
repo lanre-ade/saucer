@@ -8,6 +8,7 @@ To run, open terminal, cd to source file directory and type ‘make’
 
 
 User Interface
+
 The controls for the game are as follows:
 
 Pressing ‘0’ moves the launch site right and pressing ‘9’ moves the launch site left
